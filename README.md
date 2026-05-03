@@ -6,3 +6,4 @@ To run this cmake project,you need config 5 tools into you system path.
 5.ninja bin
 通过网盘分享的文件：MCU_Cmaketool
 链接: https://pan.baidu.com/s/1IBQ8ovTwv4FGWI-syLBHwA?pwd=5qxv 提取码: 5qxv
+There is a minor bug: you need to flash the program once in Keil MDK before you can flash it in the CMake project. This issue occurs because DAPLink fails to recognize the ID register; after the initial flash via Keil, all subsequent downloads will work normally.
