@@ -24,6 +24,7 @@ launch.json
             "name": "dplinkDebug",
             "servertype": "openocd",
             "serverpath": "D:/Cmake_Tool/gd32-openocd/bin/openocd.exe",
+            "preLaunchTask": "Wake DP (pyOCD)",
             "executable": "./build/DEMO.elf",
             "runToEntryPoint": "main",
             "svdFile": "./GD32H7xx.svd",
@@ -31,12 +32,7 @@ launch.json
                 "interface/cmsis-dap.cfg",
                 "target/gd32h7xx.cfg"
             ],
-            "serverArgs": [
-                "-c",
-                "gd32h7xx.cpu configure -work-area-phys 0x20000000 -work-area-size 0x10000 -work-area-backup 0"
-            ],
-            "toolchainPrefix": "arm-none-eabi",
-
+            "toolchainPrefix": "arm-none-eabi"
         }
     ]
 }
@@ -76,21 +72,39 @@ tasks.json
             }
         },
         {
+            "label": "Wake DP (pyOCD)",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "-m",
+                "pyocd",
+                "commander",
+                "-t",
+                "cortex_m",
+                "-c",
+                "read32 0xE000ED00",
+                "-c",
+                "exit"
+            ],
+            "problemMatcher": []
+        },
+        {
             "label": "Flash",
             "type": "shell",
             "command": "D:/Cmake_Tool/gd32-openocd/bin/openocd.exe",
             "args": [
-                "-c",
-                "set WORKAREASIZE 0x10000",
                 "-f",
                 "interface/cmsis-dap.cfg",
                 "-f",
-                "target/gd32h7xx.cfg",
-                "-c",
-                "gd32h7xx.cpu configure -work-area-phys 0x20000000 -work-area-size 0x10000 -work-area-backup 0",
+                "target/gd32h7x.cfg",
                 "-c",
                 "program ./build/DEMO.elf verify reset exit"
             ],
+            "dependsOn": [
+                "Wake DP (pyOCD)"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -99,6 +113,7 @@ tasks.json
 
     ]
 }
+
 
 
 
